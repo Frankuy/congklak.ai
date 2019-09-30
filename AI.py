@@ -1,7 +1,6 @@
 from gameplay import *
 MAX_DEPTH = 3
 #state = holes_player, holes_opponent, house_player, house_opponent
-arr=[]
 holes_player = []
 holes_opponent = []
 house_player = [0]
@@ -15,30 +14,37 @@ x = holes_player, holes_opponent, house_player, house_opponent
 arr=[]
 def evaluation(state):
 	return (sum(state[2])-sum(state[3]))*1000+(sum(state[1])-sum(state[0]))
-def make_tree(state,depth,step):
-    global arr
+
+counter = 0
+def make_tree(state,depth,step,alpha,beta):
+    global counter
     if (depth==MAX_DEPTH):
         return [evaluation(state),step]
     else:
-        if (depth%2):
-            minmax_point=[10000,0]
+        if (depth%2): #Seek minimum value
+            minmax_point = 100000
             for i in range(7):
-                temp_point = make_tree(move_seeds(i,state[1],state[0],state[3],state[2],0),depth+1,step)
-                
-                if (temp_point[0]<minmax_point[0]):
-                        minmax_point = temp_point
+                temp_point = make_tree(move_seeds(i,state[1],state[0],state[3],state[2],0),depth+1,step,alpha,beta)
+                minmax_point = min(minmax_point,temp_point[0])
+                beta = min(minmax_point,beta)
+                if (alpha>=beta):
+                    break
             
-        else:    
-            minmax_point=[-10000,0]
-            for i in range(7):
-                if (depth==0):
-                    temp_point = make_tree(move_seeds(i,state[0],state[1],state[2],state[3],0),depth+1,i)
+            return [beta, step]
+            
+        else: #Seek maximum value
+            minmax_point = -100000
+            for i in range(7): 
+                if (depth==0): 
+                    temp_point = make_tree(move_seeds(i,state[0],state[1],state[2],state[3],0),depth+1,i,alpha,beta)
                 else:
-                    temp_point = make_tree(move_seeds(i,state[0],state[1],state[2],state[3],0),depth+1,step)
-            
-                if (temp_point[0]>minmax_point[0]):
-                    minmax_point = temp_point
+                    temp_point = make_tree(move_seeds(i,state[0],state[1],state[2],state[3],0),depth+1,step,alpha,beta)
+                minmax_point = max(minmax_point,temp_point[0])
+                alpha = max(minmax_point,alpha)
+                if (alpha>=beta):
+                    break
+                    
+            return [alpha, step]
                            
-        return minmax_point
         
-print(make_tree(x,0,0))
+print(make_tree(x, 0, 0, -100000, 100000))
