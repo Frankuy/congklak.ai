@@ -1,7 +1,8 @@
 #****************************************************
-# Import all function from gameplay.py
+# Import all function needed
 #****************************************************
 from gameplay import *
+import random
 
 #****************************************************
 # Put all global variables below
@@ -21,5 +22,6 @@ fill_holes(holes_opponent, 7)
 #****************************************************
 # Play the game
 #****************************************************
-index = 4
+index = random.randint(0, NUMBER_OF_HOLES-1)
+print(index)
 print(move_seeds(index, holes_player, holes_opponent, house_player, house_opponent, seed))
