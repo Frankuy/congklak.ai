@@ -21,13 +21,5 @@ fill_holes(holes_opponent, 7)
 #****************************************************
 # Play the game
 #****************************************************
-index = 6
-move_seeds(index, holes_player, holes_opponent, house_player, seed)
-
-#****************************************************
-# Print the result
-#****************************************************
-print(holes_player)
-print(house_player[0])
-print(holes_opponent)
-print(house_opponent[0])
+index = 4
+print(move_seeds(index, holes_player, holes_opponent, house_player, house_opponent, seed))
