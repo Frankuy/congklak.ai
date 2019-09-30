@@ -26,6 +26,8 @@ logo = pygame.image.load('image/logo_text.png')
 icon = pygame.image.load('image/logo.png')
 pointer = pygame.image.load('image/pointer.png')
 board = pygame.image.load('image/board.png')
+pointer_up = pygame.image.load('image/pointer-up.png')
+pointer_down = pygame.image.load('image/pointer-down.png')
 
 #############################
 # Font
@@ -113,12 +115,14 @@ def showStartScreen():
 def gameLoop():
     global value_option
     
+    ### STATE ###
     game_on = True
     hole_selected = 0
     turn = 0
     PLAYER = 0
     AI = 1
     BOT = 2
+    NUMBER_HOLES = 7
 
     #### PLAYER vs AI ####
     if value_option == 0:
@@ -137,18 +141,26 @@ def gameLoop():
         display.blit(background, (0,0))
 
         #### Show congklak board ####
-        display.blit(board, (WIDTH/2 - board.get_rect().width/2, HEIGHT/2 - board.get_rect().height/2))
+        board_location_x = WIDTH/2 - board.get_rect().width/2
+        board_location_y = HEIGHT/2 - board.get_rect().height/2
+        display.blit(board, (board_location_x, board_location_y))
 
         #### Show Turn ####
         if turn_order[turn] == PLAYER:
             turn_text = font_bold.render('PLAYER TURN', True, ORANGE)
-            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 30))
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
         elif turn_order[turn] == AI:
             turn_text = font_bold.render('AI TURN', True, ORANGE)
-            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 30))
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
         elif turn_order[turn] == BOT:
             turn_text = font_bold.render('BOT TURN', True, ORANGE)
-            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 30))
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
+
+        #### Show select hole option ####
+        if turn == 0:
+            display.blit(pointer_up, (hole_selected*64 + 190, board_location_y + board.get_rect().height - 30))
+        elif turn == 1:
+            display.blit(pointer_down, (hole_selected*64 + 190, board_location_y + 10))
 
         #### Controller Handler ####
         for event in pygame.event.get():
@@ -159,10 +171,16 @@ def gameLoop():
                     game_on = False
                 ## ARROW RIGHT PRESSED ##
                 if event.key == pygame.K_RIGHT:
-                    pass
+                    if hole_selected == NUMBER_HOLES - 1:
+                        hole_selected = 0
+                    else:
+                        hole_selected += 1
                 ## ARROW LEFT PRESSED ##
                 if event.key == pygame.K_LEFT:
-                    pass
+                    if hole_selected == 0:
+                        hole_selected = NUMBER_HOLES - 1
+                    else:
+                        hole_selected -= 1
                 ## ENTER PRESSED ##
                 if event.key == pygame.K_RETURN:
                     if turn == 0:
