@@ -26,10 +26,10 @@ print("LET'S PLAY CONGKLAK")
 print("Choose your mode !")
 print("1. Player vs Player")
 print("2. Player vs Random Bot (Without AI)")
-mode = input(">> ")
+mode = int(input(">> "))
 while (mode < 1) or (mode > 2):
     print("Wrong input !")
-    mode = input(">> ")
+    mode = int(input(">> "))
 
 #****************************************************
 # Player vs player mode
@@ -45,15 +45,15 @@ if mode == 1:
             print("Holes player 2 : " + str(holes_opponent))
             print("House player 1 : " + str(house_player))
             print("House player 2 : " + str(house_opponent))
-            index = input("Choose the hole >> ")
+            index = int(input("Choose the hole >> "))
             while not(input_valid):
                 if (index < 0) or (index > 6):
                     print("Wrong input !")
-                    index = input("Choose the hole >> ")
+                    index = int(input("Choose the hole >> "))
                 else:
                     if holes_player[index] == 0:
                         print("No seed in that hole !")
-                        index = input("Choose the hole >> ")
+                        index = int(input("Choose the hole >> "))
                     else:
                         input_valid = True
             result = move_seeds(index, holes_player, holes_opponent, house_player, house_opponent, seed)
@@ -72,15 +72,15 @@ if mode == 1:
             print("Holes player 2 : " + str(holes_opponent))
             print("House player 1 : " + str(house_player))
             print("House player 2 : " + str(house_opponent))
-            index = input("Choose the hole >> ")
+            index = int(input("Choose the hole >> "))
             while not(input_valid):
                 if (index < 0) or (index > 6):
                     print("Wrong input !")
-                    index = input("Choose the hole >> ")
+                    index = int(input("Choose the hole >> "))
                 else:
                     if holes_opponent[index] == 0:
                         print("No seed in that hole !")
-                        index = input("Choose the hole >> ")
+                        index = int(input("Choose the hole >> "))
                     else:
                         input_valid = True
             result = move_seeds(index, holes_opponent, holes_player, house_opponent, house_player, seed)
@@ -117,15 +117,15 @@ elif mode == 2:
             print("Holes player 2 : " + str(holes_opponent))
             print("House player 1 : " + str(house_player))
             print("House player 2 : " + str(house_opponent))
-            index = input("Choose the hole >> ")
+            index = int(input("Choose the hole >> "))
             while not(input_valid):
                 if (index < 0) or (index > 6):
                     print("Wrong input !")
-                    index = input("Choose the hole >> ")
+                    index = int(input("Choose the hole >> "))
                 else:
                     if holes_player[index] == 0:
                         print("No seed in that hole !")
-                        index = input("Choose the hole >> ")
+                        index = int(input("Choose the hole >> "))
                     else:
                         input_valid = True
             result = move_seeds(index, holes_player, holes_opponent, house_player, house_opponent, seed)
