@@ -25,6 +25,7 @@ background = pygame.image.load('image/background.jpg')
 logo = pygame.image.load('image/logo_text.png')
 icon = pygame.image.load('image/logo.png')
 pointer = pygame.image.load('image/pointer.png')
+board = pygame.image.load('image/board.png')
 
 #############################
 # Font
@@ -113,21 +114,41 @@ def gameLoop():
     global value_option
     
     game_on = True
+    hole_selected = 0
+    turn = 0
+    PLAYER = 0
+    AI = 1
+    BOT = 2
+
+    #### PLAYER vs AI ####
+    if value_option == 0:
+        turn_order = [PLAYER, AI]
+
+    #### PLAYER vs BOT ####
+    if value_option == 1:
+        turn_order = [PLAYER, BOT]
+
+    #### Ai vs BOT ####
+    if value_option == 2:
+        turn_order = [AI, BOT]
+
     while game_on:
         #### Show background image ####
         display.blit(background, (0,0))
 
-        #### PLAYER vs AI ####
-        if value_option == 0:
-            pass
+        #### Show congklak board ####
+        display.blit(board, (WIDTH/2 - board.get_rect().width/2, HEIGHT/2 - board.get_rect().height/2))
 
-        #### PLAYER vs BOT ####
-        if value_option == 1:
-            pass
-
-        #### Ai vs BOT ####
-        if value_option == 2:
-            pass
+        #### Show Turn ####
+        if turn_order[turn] == PLAYER:
+            turn_text = font_bold.render('PLAYER TURN', True, ORANGE)
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 30))
+        elif turn_order[turn] == AI:
+            turn_text = font_bold.render('AI TURN', True, ORANGE)
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 30))
+        elif turn_order[turn] == BOT:
+            turn_text = font_bold.render('BOT TURN', True, ORANGE)
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 30))
 
         #### Controller Handler ####
         for event in pygame.event.get():
@@ -142,6 +163,12 @@ def gameLoop():
                 ## ARROW LEFT PRESSED ##
                 if event.key == pygame.K_LEFT:
                     pass
+                ## ENTER PRESSED ##
+                if event.key == pygame.K_RETURN:
+                    if turn == 0:
+                        turn = 1
+                    elif turn == 1:
+                        turn = 0 
 
         #### Update Display ####
         pygame.display.update()
@@ -168,4 +195,4 @@ def showFinishScreen():
 #############################
 showStartScreen()
 gameLoop()
-showFinishScreen()
+# showFinishScreen()
