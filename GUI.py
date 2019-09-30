@@ -1,4 +1,5 @@
 import pygame
+import time
 
 #############################
 # Initialize pygame
@@ -28,6 +29,7 @@ pointer = pygame.image.load('image/pointer.png')
 #############################
 # Font
 #############################
+big_font = pygame.font.Font('font/TurretRoad-Bold.ttf', 100)
 font_bold = pygame.font.Font('font/TurretRoad-Bold.ttf', 40)
 font = pygame.font.Font('font/TurretRoad-Regular.ttf', 30)
 
@@ -43,6 +45,9 @@ pygame.display.set_icon(icon)
 # Global Variable
 #############################
 value_option = 0
+# 0 = PLAYER vs AI
+# 1 = PLAYER vs BOT
+# 2 = AI vs BOT
 
 #############################
 # Start Screen
@@ -97,7 +102,7 @@ def showStartScreen():
                 ### ENTER PRESSED ###
                 if event.key == pygame.K_RETURN:
                     option_selected = True
-                    
+
         #### Update Display ####
         pygame.display.update()
 
@@ -106,18 +111,31 @@ def showStartScreen():
 #############################
 def gameLoop():
     global value_option
-    print(value_option)
-    while True:
+    
+    game_on = True
+    while game_on:
         #### Show background image ####
         display.blit(background, (0,0))
+
+        #### PLAYER vs AI ####
+        if value_option == 0:
+            pass
+
+        #### PLAYER vs BOT ####
+        if value_option == 1:
+            pass
+
+        #### Ai vs BOT ####
+        if value_option == 2:
+            pass
 
         #### Controller Handler ####
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                game_on = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
+                    game_on = False
                 ## ARROW RIGHT PRESSED ##
                 if event.key == pygame.K_RIGHT:
                     pass
@@ -132,11 +150,22 @@ def gameLoop():
 # Finish Screen
 #############################
 def showFinishScreen():
-    pass    
+    #### Show background ####
+    pygame.draw.rect(display, BLACK, (0,0,WIDTH,HEIGHT))
+
+    #### Show credit ####
+    thank_you = big_font.render('THANK YOU!', True, WHITE)
+    display.blit(thank_you, (WIDTH/2 - thank_you.get_rect().width/2, HEIGHT/2))
+
+    #### Update Display ####
+    pygame.display.update()
+
+    time.sleep(3)
+    pygame.quit()    
 
 #############################
 # Run the game
 #############################
 showStartScreen()
 gameLoop()
-# showFinishScreen()
+showFinishScreen()
