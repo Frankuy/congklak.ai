@@ -1,5 +1,6 @@
 import pygame
 import time
+from gameplay import *
 
 #############################
 # Initialize pygame
@@ -117,12 +118,22 @@ def gameLoop():
     
     ### STATE ###
     game_on = True
-    hole_selected = 0
+    hole_selected = 6
     turn = 0
     PLAYER = 0
     AI = 1
     BOT = 2
     NUMBER_HOLES = 7
+
+    ### INIT GAME STATE ###
+    holes_1 = []
+    holes_2 = []
+    house_1 = [0]
+    house_2 = [0]
+    seed = 0
+
+    fill_holes(holes_1, 7)
+    fill_holes(holes_2, 7)
 
     #### PLAYER vs AI ####
     if value_option == 0:
@@ -162,6 +173,20 @@ def gameLoop():
         elif turn == 1:
             display.blit(pointer_down, (hole_selected*64 + 190, board_location_y + 10))
 
+        #### Show holes and house seed number ####
+        ##### 1 
+        display.blit(font.render(str(house_1[0]), True, WHITE), (board_location_x + 65, board_location_y + 90))
+        i = 0
+        for seed in reversed(holes_1):
+            display.blit(font.render(str(seed), True, WHITE), (i*64 + 190, board_location_y + board.get_rect().height - 75))
+            i += 1
+        ##### 2
+        display.blit(font.render(str(house_2[0]), True, WHITE), (board_location_x + 600, board_location_y + 90))
+        i = 0
+        for seed in holes_2:
+            display.blit(font.render(str(seed), True, WHITE), (i*64 + 190, board_location_y + board.get_rect().height - 140))
+            i += 1
+        
         #### Controller Handler ####
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
