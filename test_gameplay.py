@@ -22,12 +22,12 @@ fill_holes(holes_opponent, 7)
 #****************************************************
 # Play the game
 #****************************************************
-print("LET'S PLAY CONGKAK")
+print("LET'S PLAY CONGKLAK")
 print("Choose your mode !")
 print("1. Player vs Player")
 print("2. Player vs Random Bot (Without AI)")
 mode = input(">> ")
-while (mode != 1) and (mode != 2):
+while (mode < 1) or (mode > 2):
     print("Wrong input !")
     mode = input(">> ")
 
