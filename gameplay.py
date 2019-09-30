@@ -27,6 +27,7 @@ def move_seeds(index, hl_player, hl_opponent, hs_player, house_opponent, seed):
     for hole in hs_player:
         house_player.append(hole)
     seed = holes_player[index]
+    
     if (seed != 0):
         holes_player[index] = 0
     
