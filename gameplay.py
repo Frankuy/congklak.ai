@@ -13,8 +13,8 @@ def fill_holes(holes, seed):
 #****************************************************
 # Move seed clockwise and stop based on the rules
 #****************************************************
-def move_seeds(index, holes_player, holes_opponent, house_player, seed):
-    # take all seeds
+def move_seeds(index, holes_player, holes_opponent, house_player, house_opponent, seed):
+    # take all seed
     seed = holes_player[index]
     holes_player[index] = 0
 
@@ -88,3 +88,5 @@ def move_seeds(index, holes_player, holes_opponent, house_player, seed):
         house_player[0] += (holes_player[last_idx] + holes_opponent[NUMBER_OF_HOLES-last_idx-1])
         holes_player[last_idx] = 0
         holes_opponent[NUMBER_OF_HOLES-last_idx-1] = 0
+    
+    return (holes_player, holes_opponent, house_player, house_opponent)
