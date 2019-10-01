@@ -1,5 +1,6 @@
 import pygame
 import time
+import random
 from gameplay import *
 
 #############################
@@ -52,6 +53,31 @@ value_option = 0
 # 0 = PLAYER vs AI
 # 1 = PLAYER vs BOT
 # 2 = AI vs BOT
+
+#############################
+# Draw 
+#############################
+def drawHolesAndHouse(holes_1, house_1, holes_2, house_2):
+    #### Show congklak board ####
+    board_location_x = WIDTH/2 - board.get_rect().width/2
+    board_location_y = HEIGHT/2 - board.get_rect().height/2
+    display.blit(board, (board_location_x, board_location_y))
+
+    #### Show holes and house seed number ####
+    ##### 1 
+    display.blit(font.render(str(house_1[0]), True, WHITE), (board_location_x + 65, board_location_y + 90))
+    i = 0
+    for seed in reversed(holes_1):
+        display.blit(font.render(str(seed), True, WHITE), (i*64 + 190, board_location_y + board.get_rect().height - 75))
+        i += 1
+    ##### 2
+    display.blit(font.render(str(house_2[0]), True, WHITE), (board_location_x + 600, board_location_y + 90))
+    i = 0
+    for seed in holes_2:
+        display.blit(font.render(str(seed), True, WHITE), (i*64 + 190, board_location_y + board.get_rect().height - 140))
+        i += 1
+
+    return (board_location_x, board_location_y)
 
 #############################
 # Start Screen
@@ -151,42 +177,6 @@ def gameLoop():
         #### Show background image ####
         display.blit(background, (0,0))
 
-        #### Show congklak board ####
-        board_location_x = WIDTH/2 - board.get_rect().width/2
-        board_location_y = HEIGHT/2 - board.get_rect().height/2
-        display.blit(board, (board_location_x, board_location_y))
-
-        #### Show Turn ####
-        if turn_order[turn] == PLAYER:
-            turn_text = font_bold.render('PLAYER TURN', True, ORANGE)
-            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
-        elif turn_order[turn] == AI:
-            turn_text = font_bold.render('AI TURN', True, ORANGE)
-            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
-        elif turn_order[turn] == BOT:
-            turn_text = font_bold.render('BOT TURN', True, ORANGE)
-            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
-
-        #### Show select hole option ####
-        if turn == 0:
-            display.blit(pointer_up, (hole_selected*64 + 190, board_location_y + board.get_rect().height - 30))
-        elif turn == 1:
-            display.blit(pointer_down, (hole_selected*64 + 190, board_location_y + 10))
-
-        #### Show holes and house seed number ####
-        ##### 1 
-        display.blit(font.render(str(house_1[0]), True, WHITE), (board_location_x + 65, board_location_y + 90))
-        i = 0
-        for seed in reversed(holes_1):
-            display.blit(font.render(str(seed), True, WHITE), (i*64 + 190, board_location_y + board.get_rect().height - 75))
-            i += 1
-        ##### 2
-        display.blit(font.render(str(house_2[0]), True, WHITE), (board_location_x + 600, board_location_y + 90))
-        i = 0
-        for seed in holes_2:
-            display.blit(font.render(str(seed), True, WHITE), (i*64 + 190, board_location_y + board.get_rect().height - 140))
-            i += 1
-        
         #### Controller Handler ####
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -208,30 +198,117 @@ def gameLoop():
                         hole_selected -= 1
                 ## ENTER PRESSED ##
                 if event.key == pygame.K_RETURN:
-                    if turn == 0:
-                        turn = 1
-                    elif turn == 1:
-                        turn = 0 
+                    if turn == 0 and value_option != 2:
+                        choose_array = [6,5,4,3,2,1,0]
+                        if (holes_1[choose_array[hole_selected]] != 0):
+                            result = move_seeds(choose_array[hole_selected], holes_1, holes_2, house_1, house_2, seed)
+                            holes_1 = []
+                            holes_1.extend(result[0])
+                            holes_2 = []
+                            holes_2.extend(result[1])
+                            house_1 = []
+                            house_1.extend(result[2])
+                            house_2 = []
+                            house_2.extend(result[3])
 
+                            drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
+                            turn = 1
+                                
+
+        #### Show Turn ####
+        if turn_order[turn] == PLAYER:
+            turn_text = font_bold.render('PLAYER TURN', True, ORANGE)
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
+        elif turn_order[turn] == AI:
+            turn_text = font_bold.render('AI TURN', True, ORANGE)
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
+        elif turn_order[turn] == BOT:
+            turn_text = font_bold.render('BOT TURN', True, ORANGE)
+            display.blit(turn_text, (WIDTH/2 - turn_text.get_rect().width/2, 40))
+
+        #### Show select hole option ####
+        if turn == 0:
+            board_location_x, board_location_y  = drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
+            display.blit(pointer_up, (hole_selected*64 + 190, board_location_y + board.get_rect().height - 30))
+        elif turn == 1:
+            if turn_order[turn] == BOT:
+
+                ### CHECKING VALID RANDOM hole_selected ###
+                if (sum(holes_2) != 0):
+                    input_valid = False
+                    while not input_valid:
+                        hole_selected_bot = random.randint(0, NUMBER_HOLES-1)
+                        if (holes_2[hole_selected_bot] != 0):
+                            input_valid = True
+
+                    board_location_x, board_location_y  = drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
+                    display.blit(pointer_down, (hole_selected_bot*64 + 190, board_location_y + 10))
+                    pygame.display.update()
+                    time.sleep(2)
+                    result = move_seeds(hole_selected_bot, holes_2, holes_1, house_2, house_1, seed)
+                    holes_2 = []
+                    holes_2.extend(result[0])
+                    holes_1 = []
+                    holes_1.extend(result[1])
+                    house_2 = []
+                    house_2.extend(result[2])
+                    house_1 = []
+                    house_1.extend(result[3])
+                    turn = 0
+                    drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
+
+        #### Check if win or lose ####
+        if (sum(holes_1) + sum(holes_2) == 0):
+            if (sum(house_1) > sum(house_2)):
+                while game_on: 
+                    win = big_font.render('YOU WIN!', True, ORANGE)
+                    display.blit(win, (WIDTH/2 - win.get_rect().width/2, HEIGHT/2))
+                    pygame.display.update()
+                    #### Controller Handler ####
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            game_on = False
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_ESCAPE:
+                                game_on = False
+            else:
+                while game_on:
+                    lose = big_font.render('YOU LOSE!', True, ORANGE)
+                    display.blit(lose, (WIDTH/2 - lose.get_rect().width/2, HEIGHT/2))
+                    pygame.display.update()
+                    #### Controller Handler ####
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            game_on = False
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_ESCAPE:
+                                game_on = False
+
+        #### Check if skip turn occured ####
+        if (sum(holes_1) == 0):
+            turn = 1
+        if (sum(holes_2) == 0):
+            turn = 0
+        
         #### Update Display ####
         pygame.display.update()
         
-#############################
-# Finish Screen
-#############################
-def showFinishScreen():
-    #### Show background ####
-    pygame.draw.rect(display, BLACK, (0,0,WIDTH,HEIGHT))
+# #############################
+# # Finish Screen
+# #############################
+# def showFinishScreen():
+#     #### Show background ####
+#     pygame.draw.rect(display, BLACK, (0,0,WIDTH,HEIGHT))
 
-    #### Show credit ####
-    thank_you = big_font.render('THANK YOU!', True, WHITE)
-    display.blit(thank_you, (WIDTH/2 - thank_you.get_rect().width/2, HEIGHT/2))
+#     #### Show credit ####
+#     thank_you = big_font.render('THANK YOU!', True, WHITE)
+#     display.blit(thank_you, (WIDTH/2 - thank_you.get_rect().width/2, HEIGHT/2))
 
-    #### Update Display ####
-    pygame.display.update()
+#     #### Update Display ####
+#     pygame.display.update()
 
-    time.sleep(3)
-    pygame.quit()    
+#     time.sleep(3)
+#     pygame.quit()    
 
 #############################
 # Run the game
