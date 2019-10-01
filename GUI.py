@@ -2,6 +2,7 @@ import pygame
 import time
 import random
 from gameplay import *
+from ai import *
 
 #############################
 # Initialize pygame
@@ -228,11 +229,33 @@ def gameLoop():
 
         #### Show select hole option ####
         if turn == 0:
-            board_location_x, board_location_y  = drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
-            display.blit(pointer_up, (hole_selected*64 + 190, board_location_y + board.get_rect().height - 30))
-        elif turn == 1:
-            if turn_order[turn] == BOT:
+            if turn_order[turn] == PLAYER:
+                board_location_x, board_location_y  = drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
+                display.blit(pointer_up, (hole_selected*64 + 190, board_location_y + board.get_rect().height - 30))
+            if turn_order[turn] == AI:
+                state = holes_1, holes_2, house_1, house_2
+                result = make_tree(state, 0, 0, -100000, 100000)
+                # print(result)
+                hole_selected_bot = result[1]
+                board_location_x, board_location_y  = drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
+                display.blit(pointer_down, (hole_selected_bot*64 + 190, board_location_y + 10))
+                pygame.display.update()
+                time.sleep(2)
+                result = move_seeds(hole_selected_bot, holes_2, holes_1, house_2, house_1, seed)
+                holes_2 = []
+                holes_2.extend(result[0])
+                holes_1 = []
+                holes_1.extend(result[1])
+                house_2 = []
+                house_2.extend(result[2])
+                house_1 = []
+                house_1.extend(result[3])
+                turn = 0
+                drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
 
+        elif turn == 1:
+            ### FOR RANDOM BOT TURN
+            if turn_order[turn] == BOT:
                 ### CHECKING VALID RANDOM hole_selected ###
                 if (sum(holes_2) != 0):
                     input_valid = False
@@ -256,7 +279,29 @@ def gameLoop():
                     house_1.extend(result[3])
                     turn = 0
                     drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
-
+            ### FOR AI TURN
+            if turn_order[turn] == AI:
+                if (sum(holes_2) != 0):
+                    state = holes_1, holes_2, house_1, house_2
+                    result = make_tree(state, 0, 0, -100000, 100000)
+                    # print(result)
+                    hole_selected_bot = result[1]
+                    board_location_x, board_location_y  = drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
+                    display.blit(pointer_down, (hole_selected_bot*64 + 190, board_location_y + 10))
+                    pygame.display.update()
+                    time.sleep(2)
+                    result = move_seeds(hole_selected_bot, holes_2, holes_1, house_2, house_1, seed)
+                    holes_2 = []
+                    holes_2.extend(result[0])
+                    holes_1 = []
+                    holes_1.extend(result[1])
+                    house_2 = []
+                    house_2.extend(result[2])
+                    house_1 = []
+                    house_1.extend(result[3])
+                    turn = 0
+                    drawHolesAndHouse(holes_1, house_1, holes_2, house_2)
+            
         #### Check if win or lose ####
         if (sum(holes_1) + sum(holes_2) == 0):
             if (sum(house_1) > sum(house_2)):
@@ -292,27 +337,9 @@ def gameLoop():
         
         #### Update Display ####
         pygame.display.update()
-        
-# #############################
-# # Finish Screen
-# #############################
-# def showFinishScreen():
-#     #### Show background ####
-#     pygame.draw.rect(display, BLACK, (0,0,WIDTH,HEIGHT))
-
-#     #### Show credit ####
-#     thank_you = big_font.render('THANK YOU!', True, WHITE)
-#     display.blit(thank_you, (WIDTH/2 - thank_you.get_rect().width/2, HEIGHT/2))
-
-#     #### Update Display ####
-#     pygame.display.update()
-
-#     time.sleep(3)
-#     pygame.quit()    
 
 #############################
 # Run the game
 #############################
 showStartScreen()
 gameLoop()
-# showFinishScreen()
