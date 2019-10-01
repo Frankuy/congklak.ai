@@ -20,7 +20,7 @@ def make_tree(state,depth,step,alpha,beta):
     
     if (depth==MAX_DEPTH):
         return [evaluation(state),step]
-        print(depth, step)
+        # print(depth, step)
     else:
         if (depth%2): #Seek minimum value
             minmax_point = 100000
@@ -73,6 +73,4 @@ def make_tree(state,depth,step,alpha,beta):
                     
             return [alpha, step]
 
-                           
-        
-print(make_tree(x, 0, 0, -100000, 100000))
+# print(make_tree(x, 0, 0, -100000, 100000))
